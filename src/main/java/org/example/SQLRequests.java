@@ -1,23 +1,59 @@
 package org.example;
 
-        import java.sql.*;
-        import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
+/*
+TODO : move confirmation logic from SQLRequests to InOutManager
+*/
 public class SQLRequests {
-    public static Connection connectDB (String url) {
-        Connection conn = null;
+    private final ArrayList <String> tableNames = new ArrayList<>();
+    private Connection conn = null;
+    private Statement stmt;
+    InOutManager inOut = new InOutManager();
+    SQLRequests(){
         try {
-            conn = DriverManager.getConnection(url);
+            conn = DriverManager.getConnection(PropertiesReader.read());
             System.out.println("Connected...\n");
+            stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("show tables");
+            while (rs.next()) {
+                tableNames.add(rs.getString(1));
+            }
         } catch (SQLException e) {
-            // handle any sql errors
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
         }
+    }
+    public ArrayList<String> getTableNames(){
+        return tableNames;
+    }
+    public ArrayList<String> getColumnNames (String table){
+        ArrayList<String> temp = new ArrayList<>();
+        try {
+            ResultSetMetaData rsMetaData = getMetaData(table);
+            int count = rsMetaData.getColumnCount();
+            for (int i = 1; i <= count; i++) {
+                temp.add(rsMetaData.getColumnName(i));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return temp;
+    }
+    public ResultSetMetaData getMetaData(String table) throws SQLException{
+        return stmt.executeQuery("SELECT * FROM " + table).getMetaData();
+    }
+    public Connection getConnection(){
         return conn;
     }
-    public static void sendRequest (Connection conn, String query) throws SQLException {
+    public void updateDB(String query) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(query);
             System.out.println("Database updated");
@@ -27,124 +63,95 @@ public class SQLRequests {
             System.out.println("VendorError: " + e.getErrorCode());
         }
     }
-    public static void select(Connection conn, Scanner sc, Boolean showALl) {
-        Statement stmt;
-        String query, filter = null;
-        int choice = -1;
+    public void select (int tableIndex, Boolean showALl) {
+        String query, tableName = tableNames.get(tableIndex);
+        ArrayList<String> columns = getColumnNames(tableName);
         if (showALl) {
-            query = "SELECT * FROM pracownicy";
+            query = "SELECT * FROM " + tableNames.get(tableIndex);
         } else {
-            do {
-                System.out.println("\nWhat are You searching For?\n" +
-                        "0 - ID\n" +
-                        "1 - Name\n" +
-                        "2 - Surname\n" +
-                        "3 - Age\n");
-                try {
-                    choice = sc.nextInt();
-                } catch (java.util.InputMismatchException e) {
-                    System.out.println("\nUnexpected value: " + choice +
-                            "\nenter a valid choice...");
-                }
-            } while (choice < 0 || choice >= 4);
-            switch (choice){
-                case 0:
-                    filter = "id";
-                    break;
-                case 1:
-                    filter = "imie";
-                    break;
-                case 2:
-                    filter = "nazwisko";
-                    break;
-                case 3:
-                    filter = "wiek";
-                    break;
-            }
+            int choice = inOut.choiceOperator(columns, "What are You searching For?");
             System.out.println("Search for:");
-            query = "SELECT * FROM pracownicy WHERE " + filter + " = '" + sc.next() + "'";
+            query = "SELECT * FROM " + tableNames.get(tableIndex) +  " WHERE " + columns.get(choice) + " = '" + inOut.inString() + "'";
         }
         try {
-            stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            System.out.println("+-----+" + "-".repeat(17) + "+" + "-".repeat(17) + "+------+");
-            System.out.println("| id  | imie" + " ".repeat(12) + "| nazwisko        | wiek |");
-            System.out.println("+-----+" + "-".repeat(17) + "+" + "-".repeat(17) + "+------+");
-
-            while (rs.next()) {
-                String id = String.format("%-3d", (rs.getInt("id")));
-                String imie = String.format("%-15s", rs.getString("imie"));
-                String nazwisko = String.format("%-15s", rs.getString("nazwisko"));
-                String wiek = String.format("%-4d", (rs.getInt("wiek")));
-                System.out.println("| " + id + " | " + imie + " | " + nazwisko + " | " + wiek + " |");
-            }
-            System.out.println("+-----+" + "-".repeat(17) + "+" + "-".repeat(17) + "+------+");
-        } catch (SQLException ignored){}
+            inOut.showFormattedData(rs, columns);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
-    public static void insert(Connection conn, Scanner sc){
-
-        String imie, nazwisko;
-        int wiek;
-        System.out.println("podaj imie, nazwisko, wiek do wstawienia");
-        imie = sc.next();
-        nazwisko = sc.next();
-        wiek = sc.nextInt();
-
-        String query = String.format(
-                "INSERT INTO pracownicy (imie, nazwisko, wiek) VALUES('%s', '%s', %d);",
-                imie, nazwisko, wiek);
+    public void insert(int tableIndex){
+        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> columns = getColumnNames(tableNames.get(tableIndex));
+        System.out.println("Input data to insert, one by one:");
+        StringBuilder query = new StringBuilder("INSERT INTO " + tableNames.get(tableIndex) + " (");
+        for (int i = 1; i < columns.size(); i++){
+            System.out.println(columns.get(i) + ": ");
+            data.add("'" + inOut.inString()+"'");
+            query.append(columns.get(i)).append(", ");
+        }
+        query = new StringBuilder(query.substring(0, query.length() - 2));
+        query.append(") VALUES(");
+        for (String d : data){
+            query.append(d).append(", ");
+        }
+        query = new StringBuilder(query.substring(0, query.length() - 2));
+        query.append(")");
+        System.out.println(query);
         try {
-            sendRequest(conn, query);
+            updateDB(query.toString());
         } catch (SQLException e){
             System.out.println("SQLException: " + e.getMessage());
         }
     }
-
-    public static void update(Connection conn, Scanner sc){
-        Statement stmt;
-        String query;
-        String imie = "", nazwisko = "", temp = "";
-        int wiek = 0, choice;
+    public void update(int tableIndex) {
+        int choice;
+        String tableName = tableNames.get(tableIndex);
+        //chose data
         do {
-            System.out.println("Enter data ID:\n");
+            System.out.println("Enter data ID:");
             choice = -1;
             try {
-                choice = sc.nextInt();
+                choice = inOut.inInt();
             } catch (java.util.InputMismatchException e) {
-                System.out.println("Enter valid id number...\n");
+                System.out.println("Enter valid id number...");
             }
         } while (choice == -1);
-        System.out.println("Enter modified data one by one, type '-skip-' to skip to next column");
-        try {
-            imie = sc.next();
-            nazwisko = sc.next();
-            temp = sc.next();
-            if(!temp.equals("-skip-")){
-                wiek = Integer.parseInt(temp);
-            }
-        } catch (java.util.InputMismatchException e) {System.out.println("Error, nothing was changed\n");}
-        query = "UPDATE pracownicy SET ";
-        query = (imie.equals("-skip-")) ? query : query + "imie = '" +  imie + "'," ;
-        query = (nazwisko.equals("-skip-")) ? query : query + "nazwisko = '" +  nazwisko + "',";
-        query = (temp.equals("-skip-")) ? query : query + " wiek = " +  wiek + ",";
-        query = query.substring(0, query.length()-1) + " WHERE id = " + choice + ";";
-        System.out.println("Are You sure you want to change");
+        //enter data
+        System.out.println("Enter modified data one by one, type '-' to skip to next column");
+        ArrayList<String> data = new ArrayList<>();
+        ArrayList<String> columns = getColumnNames(tableName);
+        System.out.println("Input data to insert, one by one:");
+        StringBuilder query = new StringBuilder("UPDATE " + tableName + " set ");
+        for (int i = 1; i < columns.size(); i++) {
+            System.out.println(columns.get(i));
+            String temp = inOut.inString();
+            if (temp.equalsIgnoreCase("-")) continue;
+            query.append(columns.get(i)).append(" = '").append(temp).append("', ");
+            data.add(temp);
+        }
+        query = new StringBuilder(query.substring(0, query.length() - 2) + " WHERE " + columns.get(0) + " = " + choice);
+        //confirmation
+        System.out.println("Are You sure you want to change:");
         String confirmation = "";
         try {
-            stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM pracownicy where id = " + choice);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName + " WHERE " + getColumnNames(tableName).get(0) + " = " + choice);
             rs.next();
-            System.out.printf("%s %s %d%n", rs.getString("imie"), rs.getString("nazwisko"), (rs.getInt("wiek")));
-            System.out.printf("to\n" +
-                    "%s %s %s%n", imie, nazwisko, temp);
+            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) System.out.print(rs.getString(i) + " ");
+            System.out.println("\nto:");
+            for (String d : data) System.out.print(d +" ");
+            System.out.println();
             do {
                 System.out.println("Y/N?");
-                confirmation = sc.next();
+                confirmation = inOut.inString();
             } while (!confirmation.equalsIgnoreCase("Y") && !confirmation.equalsIgnoreCase("N"));
-        } catch (java.sql.SQLException ignored){}
-        if (confirmation.equalsIgnoreCase("Y")){
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //change data or cancel operation
+        if (confirmation.equalsIgnoreCase("Y")) {
             try {
-                sendRequest(conn, query);
+                updateDB(query.toString());
                 System.out.println("Data Updated Succesfully");
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage());
@@ -153,34 +160,34 @@ public class SQLRequests {
             System.out.println("Update canceled, data unchanged...");
         }
     }
-    public static void delete(Connection conn, Scanner sc) {
+    public void delete(int tableIndex) {
         int choice;
+        String tableName = tableNames.get(tableIndex);
         do {
-            System.out.println("Enter data ID:\n");
+            System.out.println("Enter data ID:");
             choice = -1;
             try {
-                choice = sc.nextInt();
+                choice = inOut.inInt();
             } catch (java.util.InputMismatchException e) {
-                System.out.println("Enter valid id number...\n");
+                System.out.println("Enter valid id number...");
             }
         } while(choice == -1);
 
         System.out.println("Are You sure you want to delete:");
         String confirmation = "";
-
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM pracownicy where id = " + choice);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM "+ tableName + " WHERE " +  getColumnNames(tableName).get(0) + " = " + choice);
             rs.next();
-            System.out.printf("%d %s %s %s%n", rs.getInt("id"), rs.getString("imie"), rs.getString("nazwisko"), rs.getInt("wiek"));
+            for(int i = 1; i <= rs.getMetaData().getColumnCount(); i++) System.out.print(rs.getString(i) + " ");
+            System.out.println();
             do {
                 System.out.println("Y/N?");
-                confirmation = sc.next();
+                confirmation = inOut.inString();
             } while(!confirmation.equalsIgnoreCase("Y") && !confirmation.equalsIgnoreCase("N"));
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {e.printStackTrace();}
         if (confirmation.equalsIgnoreCase("Y")) {
             try {
-                sendRequest(conn, "DELETE FROM pracownicy WHERE id = " + choice);
+                updateDB("DELETE FROM "+ tableName + " WHERE " +  getColumnNames(tableName).get(0) + " = " + choice);
                 System.out.println("Data Deleted Succesfully");
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage());
@@ -189,5 +196,13 @@ public class SQLRequests {
             System.out.println("Deletion canceled, data unchanged...");
         }
     }
-
+    public void closeConn (){
+        try {
+            conn.commit();
+            conn.close(); //disconnect from DB
+            System.out.println("Disconnected...");
+        } catch (SQLException e){
+            System.out.println("Something went wrong");
+        }
+    }
 }
