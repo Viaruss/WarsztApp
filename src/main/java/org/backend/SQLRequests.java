@@ -1,4 +1,6 @@
-package org.example;
+package org.backend;
+
+import org.backend.dataTypes.Account;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,13 +12,14 @@ import java.util.ArrayList;
 
 /*
 TODO : move confirmation logic from SQLRequests to InOutManager
+TODO : Adapt functions to also work with GUI input
 */
 public class SQLRequests {
     private final ArrayList <String> tableNames = new ArrayList<>();
     private Connection conn = null;
     private Statement stmt;
     InOutManager inOut = new InOutManager();
-    SQLRequests(){
+    public SQLRequests(){
         try {
             conn = DriverManager.getConnection(PropertiesReader.read());
             System.out.println("Connected...\n");
@@ -63,6 +66,7 @@ public class SQLRequests {
             System.out.println("VendorError: " + e.getErrorCode());
         }
     }
+
     public void select (int tableIndex, Boolean showALl) {
         String query, tableName = tableNames.get(tableIndex);
         ArrayList<String> columns = getColumnNames(tableName);
@@ -152,7 +156,7 @@ public class SQLRequests {
         if (confirmation.equalsIgnoreCase("Y")) {
             try {
                 updateDB(query.toString());
-                System.out.println("Data Updated Succesfully");
+                System.out.println("Data Updated Successfully");
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage());
             }
@@ -188,13 +192,26 @@ public class SQLRequests {
         if (confirmation.equalsIgnoreCase("Y")) {
             try {
                 updateDB("DELETE FROM "+ tableName + " WHERE " +  getColumnNames(tableName).get(0) + " = " + choice);
-                System.out.println("Data Deleted Succesfully");
+                System.out.println("Data Deleted Successfully");
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage());
             }
         } else {
             System.out.println("Deletion canceled, data unchanged...");
         }
+    }
+    public ArrayList<Account> accountInfo(){
+        ArrayList<Account> accounts = new ArrayList<>();
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM dane_kont;");
+            while (rs.next()){
+                accounts.add(new Account(rs.getInt(1), rs.getString(2), rs.getString(3)));
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+        return accounts;
     }
     public void closeConn (){
         try {

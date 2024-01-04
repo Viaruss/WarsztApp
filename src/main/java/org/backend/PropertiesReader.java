@@ -1,4 +1,4 @@
-package org.example;
+package org.backend;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -11,7 +11,7 @@ public class PropertiesReader {
         String url = "jdbc:mysql://localhost:55555/warsztat?user=root&serverTimezone=UTC";
         try {
             //fr = new FileReader("properties.txt");                                        //for jar
-            fr = new FileReader("src/main/java/org/example/properties.txt");        //for IDE
+            fr = new FileReader("src/main/java/org/backend/properties.txt");        //for IDE
         } catch(FileNotFoundException e){
             System.out.println("Config file not found, using default db address");
         } try {

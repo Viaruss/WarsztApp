@@ -1,4 +1,4 @@
-package org.example;
+package org.backend;
 
 
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Menu {
     InOutManager inOut = new InOutManager();
+
+    //old code - console app functionality
     public void menuLoop(SQLRequests req) {
         ArrayList<String> menuOptions = new ArrayList<>(List.of(
                 "Show data",

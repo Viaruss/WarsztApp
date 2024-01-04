@@ -1,4 +1,4 @@
-package org.example;
+package org.backend;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
