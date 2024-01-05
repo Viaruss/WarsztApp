@@ -5,6 +5,7 @@ import GUI.Resources.Colors;
 import GUI.Resources.Icons;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class MainWindow {
@@ -14,15 +15,17 @@ public class MainWindow {
     Icons icons = new Icons();
 
     JPanel pageContent = new JPanel(new CardLayout());
+
+    JLabel bottomInfo;
     MainWindow(AccountManager acc){
         accountManager = acc;
         Colors colorPalette = new Colors();
         frame = new JFrame("WarsztApp");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setMinimumSize(new Dimension(550, 650));
+        String lastAction = "Logged in Successfully";
 
         //TOP CONTENT OF THE APP WINDOW
-
         //App menu bar
         JMenuBar menuBar = new JMenuBar();
             menuBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -78,7 +81,7 @@ public class MainWindow {
         accountInfo.setFocusable(false);
         accountInfo.setVisible(true);
 
-        JLabel bottomInfo = new JLabel("PLACEHOLDER: Database info");
+        bottomInfo = new JLabel(lastAction);
         bottomInfo.setForeground(Color.white);
 
         bottomContent.add(accountInfo, BorderLayout.WEST);
@@ -87,32 +90,116 @@ public class MainWindow {
         bottomContent.setForeground(Color.white);
 
         //CENTER CONTENT OF THE APP WINDOW
-        pageContent.setBackground(colorPalette.dark2);
-
         JPanel page1 = new JPanel(new GridLayout(1, 3));
-            page1.add(new JLabel("LEFT SIDE TEST") );
-            page1.add(new JLabel("CENTER TEST"));
-            page1.add(new JLabel("RIGHT SIDE TEST"));
+            JPanel leftSide1 = new JPanel(new GridLayout(2,1));
+                JPanel leftSide1Top = new JPanel(new FlowLayout());
+                    JLabel left1 = new JLabel("LEFT SIDE TEST 1");
+                    leftSide1Top.add(left1);
+                JPanel leftSide2Top = new JPanel(new FlowLayout());
+                    JLabel left2 = new JLabel("LEFT SIDE TEST 2");
+                    leftSide2Top.add(left2);
+                leftSide1.add(leftSide1Top);
+                leftSide1.add(leftSide2Top);
+            page1.add(leftSide1);
+
+            JPanel centerSide1 = new JPanel();
+                JLabel center1 = new JLabel("CENTER TEST");
+                centerSide1.add(center1);
+            page1.add(centerSide1);
+
+            JPanel rightSide1 = new JPanel();
+                JLabel right1 = new JLabel("RIGHT SIDE TEST");
+                rightSide1.add(right1);
+            page1.add(rightSide1);
+
         pageContent.add(page1, "1");
 
+
+
         JPanel page2 = new JPanel();
-            JLabel label2 = new JLabel("asd2");
-            page2.add(label2);
+            page2.add(new JLabel("PLACEHOLDER 2"));
+            page2.add(new JLabel("**WORK IN PROGRESS**"));
         pageContent.add(page2, "2");
 
+
+
         JPanel page3 = new JPanel();
-            JLabel label3 = new JLabel("asd3");
-            page3.add(label3);
+            page3.add(new JLabel("PLACEHOLDER 3"));
+            page3.add(new JLabel("**WORK IN PROGRESS**"));
         pageContent.add(page3, "3");
 
+
+
         JPanel page4 = new JPanel();
-            JLabel label4 = new JLabel("asd4");
-            page4.add(label4);
+        page4.add(new JLabel("PLACEHOLDER 4"));
+        page4.add(new JLabel("**WORK IN PROGRESS**"));
         pageContent.add(page4, "4");
 
-        JPanel page5 = new JPanel();
-            JLabel label5 = new JLabel("asd5");
-            page5.add(label5);
+
+
+        JPanel page5 = new JPanel(new BorderLayout());
+            JPanel tablePanel = new JPanel(new BorderLayout());
+                JLabel tableTitle = new JLabel("PRACOWNICY");
+                    tableTitle.setHorizontalAlignment(SwingConstants.CENTER);
+                    tablePanel.add(tableTitle, BorderLayout.NORTH);
+                tablePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                DefaultTableModel tableModel = new DefaultTableModel(
+                        new Object[][]{
+                                {"John", "Doe", 28},
+                                {"Jane", "Smith", 35},
+                                {"Bob", "Johnson", 42}
+                        },
+                        new Object[]{"First Name", "Last Name", "Age"}
+                );
+
+                // Create a JTable with the TableModel
+                JTable table = new JTable(tableModel);
+
+                // Add the JTable to a JScrollPane for scrolling
+                JScrollPane tableScroll = new JScrollPane(table);
+                tablePanel.add(tableScroll, BorderLayout.CENTER);
+
+            JPanel buttonsPanel = new JPanel();
+                buttonsPanel.setPreferredSize(new Dimension(200,200));
+                buttonsPanel.setLayout(new GridLayout(9, 0, 0, 5));
+                buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+
+                JButton tableAdd = new JButton("Add element", icons.gearIcon);
+                tableAdd.addActionListener(e -> System.out.println(1));
+                ButtonConstructor.tableButton(tableAdd);
+
+                JButton tableDelete = new JButton("Delete element", icons.gearIcon);
+                tableDelete.addActionListener(e -> System.out.println(2));
+                ButtonConstructor.tableButton(tableDelete);
+
+                JButton tableModify = new JButton("Modify element", icons.gearIcon);
+                tableModify.addActionListener(e -> System.out.println(3));
+                ButtonConstructor.tableButton(tableModify);
+
+                JButton tableSearch = new JButton("Search element", icons.gearIcon);
+                tableSearch.addActionListener(e -> System.out.println(4));
+                ButtonConstructor.tableButton(tableSearch);
+
+                JButton tableRefresh = new JButton("Refresh", icons.gearIcon);
+                tableRefresh.addActionListener(e -> System.out.println(5));
+                ButtonConstructor.tableButton(tableRefresh);
+
+                JButton tableChange = new JButton("Change table", icons.gearIcon);
+                tableChange.addActionListener(e -> System.out.println(6));
+                ButtonConstructor.tableButton(tableChange);
+
+                buttonsPanel.add(new JLabel());
+                buttonsPanel.add(tableAdd);
+                buttonsPanel.add(tableDelete);
+                buttonsPanel.add(tableModify);
+                buttonsPanel.add(tableSearch);
+                buttonsPanel.add(new JLabel());
+                buttonsPanel.add(tableRefresh);
+                buttonsPanel.add(tableChange);
+                buttonsPanel.add(new JLabel());
+
+            page5.add(tablePanel, BorderLayout.CENTER);
+            page5.add(buttonsPanel, BorderLayout.EAST);
         pageContent.add(page5, "5");
 
 
@@ -130,7 +217,6 @@ public class MainWindow {
         currentPage = page;
         CardLayout cardLayout = (CardLayout) pageContent.getLayout();
         cardLayout.show(pageContent, page);
-        JOptionPane.showMessageDialog(frame, "**WORK IN PROGRESS**\nOPENED PAGE " + page);
-
+        bottomInfo.setText("OPENED PAGE " + page);
     }
 }
