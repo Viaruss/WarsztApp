@@ -8,7 +8,8 @@ import java.awt.event.MouseEvent;
 public class ButtonConstructor {
     public static void topButton(JButton button){
         Colors colorPalette = new Colors();
-        button.setBackground(colorPalette.dark3);
+        Color buttonColor = colorPalette.dark3;
+        button.setBackground(buttonColor);
         button.setForeground(Color.white);
         button.setFocusable(false);
         button.setToolTipText("go to " + button.getText() + " page");
@@ -18,12 +19,16 @@ public class ButtonConstructor {
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setBackground(/*colorPalette.dark3.brighter()*/ colorPalette.light1);
+                if(button.getBackground().getRGB() == colorPalette.dark3.getRGB()){
+                    button.setBackground(colorPalette.light1);
+                }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                button.setBackground(colorPalette.dark3);
+                if(button.getBackground().getRGB() == colorPalette.light1.getRGB()){
+                    button.setBackground(colorPalette.dark3);
+                }
             }
         });
     }

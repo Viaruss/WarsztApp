@@ -2,6 +2,7 @@ package org.backend;
 
 import org.backend.dataTypes.Account;
 
+import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,6 +10,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /*
 TODO : move confirmation logic from SQLRequests to InOutManager
@@ -213,6 +215,36 @@ public class SQLRequests {
         }
         return accounts;
     }
+
+    public DefaultTableModel getTableModel(String tableName){
+        DefaultTableModel tableModel= new DefaultTableModel();
+        try {
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM " + tableName);
+            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+
+            //Object[] columnNames = new Object[resultSetMetaData.getColumnCount()];
+            for(int i = 0; i < resultSetMetaData.getColumnCount(); i++){
+                 //columnNames[i] = resultSetMetaData.getColumnLabel(i);
+                 tableModel.addColumn(resultSetMetaData.getColumnLabel(i+1));
+            }
+
+            // Clear the existing data in the table model
+            tableModel.setRowCount(0);
+            // Populate the table model with data from the database
+            while (resultSet.next()) {
+                Vector<Object> rowData = new Vector<>();
+                for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+                    rowData.add(resultSet.getObject(i));
+                }
+                tableModel.addRow(rowData);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tableModel;
+    }
+
     public void closeConn (){
         try {
             conn.commit();

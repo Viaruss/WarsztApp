@@ -17,14 +17,18 @@ public class AccountManager {
             if (account.getLogin().equals(userLogin)){
                 if (md5hash.Hash(userPassword).equals(account.getPassword())) {
                     activeAccount = account;
+                    return true;
                 }
-                return true;
             }
         }
         return false;
     }
     public Account getActiveAccount(){
         return activeAccount;
+    }
+
+    public SQLRequests getReq() {
+        return req;
     }
 }
 
