@@ -164,7 +164,14 @@ public class MainWindow {
                 ButtonConstructor.tableButton(tableAdd);
 
                 JButton tableDelete = new JButton("Delete element", icons.deleteIcon);
-                tableDelete.addActionListener(e -> System.out.println(2));
+                tableDelete.addActionListener(e -> {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        showDeleteConfirmationDialog(frame, table, selectedRow);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Please select a row to delete.");
+                    }
+                });
                 ButtonConstructor.tableButton(tableDelete);
 
                 JButton tableModify = new JButton("Modify element", icons.editIcon);
@@ -353,5 +360,18 @@ public class MainWindow {
         };
 
         sorter.setRowFilter(rowFilter);
+    }
+    private void showDeleteConfirmationDialog(JFrame parentFrame, JTable table, int selectedRow) {
+        int result = JOptionPane.showConfirmDialog(
+                parentFrame,
+                "Are you sure you want to delete the selected row?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+            DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+            tableModel.removeRow(selectedRow);
+            bottomInfo.setText("DB: OK - Data deleted successfully");
+        }
     }
 }
