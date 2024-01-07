@@ -7,6 +7,7 @@ import org.backend.SQLRequests;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.util.Vector;
 
@@ -18,7 +19,7 @@ public class MainWindow {
 
     JPanel pageContent = new JPanel(new CardLayout());
 
-    JLabel bottomInfo;
+    JLabel bottomInfo = new JLabel();
     JButton[] topButtons;
     JTable table;
     MainWindow(AccountManager acc){
@@ -88,7 +89,7 @@ public class MainWindow {
                 accountInfo.setFocusable(false);
                 accountInfo.setVisible(true);
 
-        bottomInfo = new JLabel(lastAction);
+        bottomInfo.setText(lastAction);
         bottomInfo.setForeground(Color.white);
 
         bottomContent.add(accountInfo, BorderLayout.WEST);
@@ -172,7 +173,6 @@ public class MainWindow {
 
                     if (selectedRow != -1) {
                         showUpdateDialog(frame, table, selectedRow);
-                        bottomInfo.setText("DB: OK - Updated data at row " + table.getSelectedRow()+1);
                     } else {
                         JOptionPane.showMessageDialog(frame, "Please select a row to update.");
                     }
@@ -180,7 +180,7 @@ public class MainWindow {
                 ButtonConstructor.tableButton(tableModify);
 
                 JButton tableSearch = new JButton("Search element", icons.searchIcon);
-                tableSearch.addActionListener(e -> System.out.println(4));
+                    tableSearch.addActionListener(e -> showSearchDialog(frame, table));
                 ButtonConstructor.tableButton(tableSearch);
 
                 JButton tableRefresh = new JButton("Refresh", icons.refreshIcon);
@@ -266,36 +266,92 @@ public class MainWindow {
 
     public JTable makeTable(DefaultTableModel tableModel){
         JTable table = new JTable(tableModel);
-        table.setAutoCreateRowSorter(true);
-        table.getTableHeader().setReorderingAllowed(false);
-        table.setFillsViewportHeight(true);
+            table.setAutoCreateRowSorter(true);
+            table.getTableHeader().setReorderingAllowed(false);
+            table.setFillsViewportHeight(true);
         return table;
     }
-    private static void showUpdateDialog(JFrame parentFrame, JTable table, int selectedRow) {
+    private void showUpdateDialog(JFrame parentFrame, JTable table, int selectedRow) {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
         Vector rowData = tableModel.getDataVector().elementAt(selectedRow);
 
         JDialog dialog = new JDialog(parentFrame, "Update Element", true);
-        dialog.setLayout(new GridLayout(rowData.size()+1, 2));
+            dialog.setLayout(new GridLayout(rowData.size()+1, 2));
         Vector<JTextField> dialogTextFields = new Vector<>();
-        for(int i = 0; i < table.getColumnCount(); i++){
-            dialog.add(new JLabel(table.getColumnName(i)));
-            dialogTextFields.add(new JTextField(rowData.get(i).toString()));
-            dialog.add(dialogTextFields.get(i));
-        }
-        JButton updateButton = new JButton("Update", new Icons().editIcon);
-        updateButton.addActionListener(e -> {
             for(int i = 0; i < table.getColumnCount(); i++){
-                rowData.set(i, dialogTextFields.get(i).getText());
+                dialog.add(new JLabel(table.getColumnName(i)));
+                dialogTextFields.add(new JTextField(rowData.get(i).toString()));
+                dialog.add(dialogTextFields.get(i));
             }
-            tableModel.fireTableRowsUpdated(selectedRow, selectedRow);
-            dialog.dispose();
-        });
+        JButton updateButton = new JButton("Update", new ImageIcon(new Icons().editIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            updateButton.addActionListener(e -> {
+                for(int i = 0; i < table.getColumnCount(); i++){
+                    rowData.set(i, dialogTextFields.get(i).getText());
+                }
+                tableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+                bottomInfo.setText("DB: OK - Updated data at row " + table.getSelectedRow()+1);
+                dialog.dispose();
+            });
+        JButton cancelButton = new JButton("Cancel",new ImageIcon(new Icons().cancelIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+        cancelButton.addActionListener(e -> dialog.dispose());
 
         dialog.add(updateButton);
+        dialog.add(cancelButton);
 
         dialog.setSize(550, 300);
         dialog.setLocationRelativeTo(parentFrame);
         dialog.setVisible(true);
+    }
+    private void showSearchDialog(JFrame parentFrame, JTable table) {
+        // Create a dialog for searching the table
+        JDialog dialog = new JDialog(parentFrame, "Search Table", true);
+            dialog.setLayout(new GridLayout(2, 2));
+
+        JLabel searchLabel = new JLabel("Enter Search Criteria:");
+        JTextField searchField = new JTextField();
+
+        JButton searchButton = new JButton("Search", new ImageIcon(new Icons().searchIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            searchButton.addActionListener(e -> {
+                String searchCriteria = searchField.getText().toLowerCase();
+                filterTable(table, searchCriteria);
+                bottomInfo.setText("Search Completed, matching records: " + table.getRowCount());
+                dialog.dispose();
+            });
+        JButton cancelButton = new JButton("Cancel", new ImageIcon(new Icons().cancelIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+            cancelButton.addActionListener(e -> dialog.dispose());
+        dialog.add(searchLabel);
+        dialog.add(searchField);
+        dialog.add(searchButton);
+        dialog.add(cancelButton);
+
+        dialog.setSize(300, 100);
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setVisible(true);
+    }
+
+    private static void filterTable(JTable table, String searchCriteria) {
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
+
+        RowFilter<Object, Object> rowFilter = new RowFilter<>() {
+            @Override
+            public boolean include(RowFilter.Entry<?, ?> entry) {
+                // Iterate through all columns of the entry
+                for (int i = entry.getValueCount() - 1; i >= 0; i--) {
+                    Object value = entry.getValue(i);
+                    // Convert value to lowercase for case-insensitive search
+                    String strValue = (value == null) ? "" : value.toString().toLowerCase();
+                    // Check if the value contains the search criteria
+                    if (strValue.contains(searchCriteria)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        sorter.setRowFilter(rowFilter);
     }
 }

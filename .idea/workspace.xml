@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="Page5 update: Made tables synchronised with DB, added option to refresh and change current table">
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconAdd.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconChangeTable.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconDelete.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconEdit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconRefresh.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconSearch.png" afterDir="false" />
+    <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="Added functionality to modify table button, added new icon to all buttons, minor bugfixes">
+      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconCancel.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/GUI/Resources/Icons.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/Icons.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/SQLRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/backend/SQLRequests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +175,14 @@
       <option name="project" value="LOCAL" />
       <updated>1704570550144</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added functionality to modify table button, added new icon to all buttons, minor bugfixes">
+      <created>1704626718969</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1704626718969</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -206,6 +207,7 @@
     <MESSAGE value="Created page 5 layout and remaining datatypes for later" />
     <MESSAGE value="Test" />
     <MESSAGE value="Page5 update: Made tables synchronised with DB, added option to refresh and change current table" />
-    <option name="LAST_COMMIT_MESSAGE" value="Page5 update: Made tables synchronised with DB, added option to refresh and change current table" />
+    <MESSAGE value="Added functionality to modify table button, added new icon to all buttons, minor bugfixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added functionality to modify table button, added new icon to all buttons, minor bugfixes" />
   </component>
 </project>
