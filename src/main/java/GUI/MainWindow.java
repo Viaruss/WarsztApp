@@ -160,7 +160,7 @@ public class MainWindow {
                 buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
 
                 JButton tableAdd = new JButton("Add element", icons.addIcon);
-                tableAdd.addActionListener(e -> System.out.println(1));
+                tableAdd.addActionListener(e -> showAddRowDialog(frame, table));
                 ButtonConstructor.tableButton(tableAdd);
 
                 JButton tableDelete = new JButton("Delete element", icons.deleteIcon);
@@ -373,5 +373,35 @@ public class MainWindow {
             tableModel.removeRow(selectedRow);
             bottomInfo.setText("DB: OK - Data deleted successfully");
         }
+    }
+    private void showAddRowDialog(JFrame parentFrame, JTable table) {
+        JDialog dialog = new JDialog(parentFrame, "Add New Row", true);
+            dialog.setLayout(new GridLayout(table.getColumnCount()+1, 2));
+            Vector<JTextField> dialogTextFields = new Vector<>();
+            for(int i = 0; i < table.getColumnCount(); i++){
+                dialog.add(new JLabel(table.getColumnName(i)));
+                dialogTextFields.add(new JTextField());
+                dialog.add(dialogTextFields.get(i));
+            }
+
+            JButton addButton = new JButton("Add",new ImageIcon(new Icons().addIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+                addButton.addActionListener(e -> {
+                    DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+                    Vector<String> dialogTexts = new Vector<>();
+                    for(JTextField textField : dialogTextFields) dialogTexts.add(textField.getText());
+                    tableModel.addRow(dialogTexts);
+                    bottomInfo.setText("DB: OK - Data added Successfully");
+                    dialog.dispose();
+                });
+
+            JButton cancelButton = new JButton("Cancel",new ImageIcon(new Icons().cancelIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
+                cancelButton.addActionListener(e -> dialog.dispose());
+
+        dialog.add(addButton);
+        dialog.add(cancelButton);
+
+        dialog.setSize(550, 300);
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setVisible(true);
     }
 }
