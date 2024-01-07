@@ -8,6 +8,7 @@ import org.backend.SQLRequests;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Vector;
 
 public class MainWindow {
     String currentPage = "1";
@@ -19,6 +20,7 @@ public class MainWindow {
 
     JLabel bottomInfo;
     JButton[] topButtons;
+    JTable table;
     MainWindow(AccountManager acc){
         accountManager = acc;
         SQLRequests req = acc.getReq();
@@ -142,45 +144,57 @@ public class MainWindow {
 
         JPanel page5 = new JPanel(new BorderLayout());
             JPanel tablePanel = new JPanel(new BorderLayout());
-                JLabel tableTitle = new JLabel("PRACOWNICY");
+                JLabel tableTitle = new JLabel("DANE MECHANIKOW");
                     tableTitle.setHorizontalAlignment(SwingConstants.CENTER);
                     tablePanel.add(tableTitle, BorderLayout.NORTH);
                 tablePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
                 DefaultTableModel tableModel = req.getTableModel("Dane_mechanikow");
-                tablePanel.add(makeTable(tableModel), BorderLayout.CENTER);
+                table = makeTable(tableModel);
+                JScrollPane tableScroll = new JScrollPane(table);
+                tablePanel.add(tableScroll, BorderLayout.CENTER);
 
             JPanel buttonsPanel = new JPanel();
                 buttonsPanel.setPreferredSize(new Dimension(200,200));
                 buttonsPanel.setLayout(new GridLayout(9, 0, 0, 5));
                 buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
 
-                JButton tableAdd = new JButton("Add element", icons.gearIcon);
+                JButton tableAdd = new JButton("Add element", icons.addIcon);
                 tableAdd.addActionListener(e -> System.out.println(1));
                 ButtonConstructor.tableButton(tableAdd);
 
-                JButton tableDelete = new JButton("Delete element", icons.gearIcon);
+                JButton tableDelete = new JButton("Delete element", icons.deleteIcon);
                 tableDelete.addActionListener(e -> System.out.println(2));
                 ButtonConstructor.tableButton(tableDelete);
 
-                JButton tableModify = new JButton("Modify element", icons.gearIcon);
-                tableModify.addActionListener(e -> System.out.println(3));
+                JButton tableModify = new JButton("Modify element", icons.editIcon);
+                tableModify.addActionListener(e -> {
+                    int selectedRow = table.getSelectedRow();
+
+                    if (selectedRow != -1) {
+                        showUpdateDialog(frame, table, selectedRow);
+                        bottomInfo.setText("DB: OK - Updated data at row " + table.getSelectedRow()+1);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Please select a row to update.");
+                    }
+                });
                 ButtonConstructor.tableButton(tableModify);
 
-                JButton tableSearch = new JButton("Search element", icons.gearIcon);
+                JButton tableSearch = new JButton("Search element", icons.searchIcon);
                 tableSearch.addActionListener(e -> System.out.println(4));
                 ButtonConstructor.tableButton(tableSearch);
 
-                JButton tableRefresh = new JButton("Refresh", icons.gearIcon);
+                JButton tableRefresh = new JButton("Refresh", icons.refreshIcon);
                 tableRefresh.addActionListener(e -> {
                     tablePanel.remove(1);
-                    tablePanel.add(makeTable(req.getTableModel(tableTitle.getText().replace(" ", "_").toUpperCase())));
+                    table = makeTable(req.getTableModel(tableTitle.getText().replace(" ", "_").toUpperCase()));
+                    tablePanel.add(new JScrollPane(table));
                     bottomInfo.setText("Data synchronised with Database");
                     frame.revalidate();
                     frame.repaint();
                 });
                 ButtonConstructor.tableButton(tableRefresh);
 
-                JButton tableChange = new JButton("Change table", icons.gearIcon);
+                JButton tableChange = new JButton("Change table", icons.changeTableIcon);
                 tableChange.addActionListener(e -> {
                     JPanel inputDialog = new JPanel();
                         inputDialog.setLayout(new BoxLayout(inputDialog, BoxLayout.Y_AXIS));
@@ -203,7 +217,8 @@ public class MainWindow {
                     if (result == JOptionPane.OK_OPTION) {
                         String selectedTable = (String) dropDownTableNames.getSelectedItem();
                         tablePanel.remove(1);
-                        tablePanel.add(makeTable(req.getTableModel(selectedTable)));
+                        table = makeTable(req.getTableModel(selectedTable));
+                        tablePanel.add(new JScrollPane(table));
                         assert selectedTable != null;
                         tableTitle.setText(selectedTable.replace("_", " ").toUpperCase());
                         bottomInfo.setText("Data table changed");
@@ -249,12 +264,38 @@ public class MainWindow {
         bottomInfo.setText("OPENED PAGE " + page);
     }
 
-    public JScrollPane makeTable(DefaultTableModel tableModel){
+    public JTable makeTable(DefaultTableModel tableModel){
         JTable table = new JTable(tableModel);
         table.setAutoCreateRowSorter(true);
         table.getTableHeader().setReorderingAllowed(false);
-        JScrollPane tableScroll = new JScrollPane(table);
         table.setFillsViewportHeight(true);
-        return tableScroll;
+        return table;
+    }
+    private static void showUpdateDialog(JFrame parentFrame, JTable table, int selectedRow) {
+        DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        Vector rowData = tableModel.getDataVector().elementAt(selectedRow);
+
+        JDialog dialog = new JDialog(parentFrame, "Update Element", true);
+        dialog.setLayout(new GridLayout(rowData.size()+1, 2));
+        Vector<JTextField> dialogTextFields = new Vector<>();
+        for(int i = 0; i < table.getColumnCount(); i++){
+            dialog.add(new JLabel(table.getColumnName(i)));
+            dialogTextFields.add(new JTextField(rowData.get(i).toString()));
+            dialog.add(dialogTextFields.get(i));
+        }
+        JButton updateButton = new JButton("Update", new Icons().editIcon);
+        updateButton.addActionListener(e -> {
+            for(int i = 0; i < table.getColumnCount(); i++){
+                rowData.set(i, dialogTextFields.get(i).getText());
+            }
+            tableModel.fireTableRowsUpdated(selectedRow, selectedRow);
+            dialog.dispose();
+        });
+
+        dialog.add(updateButton);
+
+        dialog.setSize(550, 300);
+        dialog.setLocationRelativeTo(parentFrame);
+        dialog.setVisible(true);
     }
 }

@@ -55,9 +55,6 @@ public class SQLRequests {
     public ResultSetMetaData getMetaData(String table) throws SQLException{
         return stmt.executeQuery("SELECT * FROM " + table).getMetaData();
     }
-    public Connection getConnection(){
-        return conn;
-    }
     public void updateDB(String query) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(query);
@@ -217,7 +214,13 @@ public class SQLRequests {
     }
 
     public DefaultTableModel getTableModel(String tableName){
-        DefaultTableModel tableModel= new DefaultTableModel();
+        DefaultTableModel tableModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make all cells non-editable
+                return false;
+            }
+        };
         try {
             ResultSet resultSet = stmt.executeQuery("SELECT * FROM " + tableName);
             ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
@@ -243,15 +246,5 @@ public class SQLRequests {
             e.printStackTrace();
         }
         return tableModel;
-    }
-
-    public void closeConn (){
-        try {
-            conn.commit();
-            conn.close(); //disconnect from DB
-            System.out.println("Disconnected...");
-        } catch (SQLException e){
-            System.out.println("Something went wrong");
-        }
     }
 }
