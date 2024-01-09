@@ -55,57 +55,45 @@ public class SQLRequests {
     public ResultSetMetaData getMetaData(String table) throws SQLException{
         return stmt.executeQuery("SELECT * FROM " + table).getMetaData();
     }
-    public void updateDB(String query) throws SQLException {
+    public boolean updateDB(String query) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(query);
             System.out.println("Database updated");
+            return true;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());
             System.out.println("VendorError: " + e.getErrorCode());
+            return false;
         }
     }
 
-    public void select (int tableIndex, Boolean showALl) {
-        String query, tableName = tableNames.get(tableIndex);
+    public boolean insert(Vector<String> data, String tableName){
         ArrayList<String> columns = getColumnNames(tableName);
-        if (showALl) {
-            query = "SELECT * FROM " + tableNames.get(tableIndex);
-        } else {
-            int choice = inOut.choiceOperator(columns, "What are You searching For?");
-            System.out.println("Search for:");
-            query = "SELECT * FROM " + tableNames.get(tableIndex) +  " WHERE " + columns.get(choice) + " = '" + inOut.inString() + "'";
-        }
-        try {
-            ResultSet rs = stmt.executeQuery(query);
-            inOut.showFormattedData(rs, columns);
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-    public void insert(int tableIndex){
-        ArrayList<String> data = new ArrayList<>();
-        ArrayList<String> columns = getColumnNames(tableNames.get(tableIndex));
-        System.out.println("Input data to insert, one by one:");
-        StringBuilder query = new StringBuilder("INSERT INTO " + tableNames.get(tableIndex) + " (");
+        StringBuilder query = new StringBuilder("INSERT INTO " + tableName + " (");
         for (int i = 1; i < columns.size(); i++){
-            System.out.println(columns.get(i) + ": ");
-            data.add("'" + inOut.inString()+"'");
             query.append(columns.get(i)).append(", ");
         }
         query = new StringBuilder(query.substring(0, query.length() - 2));
         query.append(") VALUES(");
         for (String d : data){
-            query.append(d).append(", ");
+            try {
+                Double.parseDouble(d);
+                query.append(d).append(", ");
+            } catch (NumberFormatException nfe) {
+                query.append("'").append(d).append("', ");
+            }
         }
         query = new StringBuilder(query.substring(0, query.length() - 2));
         query.append(")");
         System.out.println(query);
+        boolean outcome = false;
         try {
-            updateDB(query.toString());
+            outcome = updateDB(query.toString());
         } catch (SQLException e){
             System.out.println("SQLException: " + e.getMessage());
         }
+        return outcome;
     }
     public void update(int tableIndex) {
         int choice;

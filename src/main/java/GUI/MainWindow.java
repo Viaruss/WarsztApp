@@ -22,9 +22,10 @@ public class MainWindow {
     JLabel bottomInfo = new JLabel();
     JButton[] topButtons;
     JTable table;
+    SQLRequests req;
     MainWindow(AccountManager acc){
         accountManager = acc;
-        SQLRequests req = acc.getReq();
+        req = acc.getReq();
         Colors colorPalette = new Colors();
         frame = new JFrame("WarsztApp");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -160,7 +161,11 @@ public class MainWindow {
                 buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
 
                 JButton tableAdd = new JButton("Add element", icons.addIcon);
-                tableAdd.addActionListener(e -> showAddRowDialog(frame, table));
+                tableAdd.addActionListener(e -> {
+                    showAddRowDialog(frame, table, tableTitle.getText());
+                    refreshTable(tablePanel, tableTitle);
+                });
+
                 ButtonConstructor.tableButton(tableAdd);
 
                 JButton tableDelete = new JButton("Delete element", icons.deleteIcon);
@@ -192,12 +197,8 @@ public class MainWindow {
 
                 JButton tableRefresh = new JButton("Refresh", icons.refreshIcon);
                 tableRefresh.addActionListener(e -> {
-                    tablePanel.remove(1);
-                    table = makeTable(req.getTableModel(tableTitle.getText().replace(" ", "_").toUpperCase()));
-                    tablePanel.add(new JScrollPane(table));
+                    refreshTable(tablePanel, tableTitle);
                     bottomInfo.setText("Data synchronised with Database");
-                    frame.revalidate();
-                    frame.repaint();
                 });
                 ButtonConstructor.tableButton(tableRefresh);
 
@@ -336,6 +337,13 @@ public class MainWindow {
         dialog.setVisible(true);
     }
 
+    private void refreshTable(JPanel tablePanel, JLabel tableTitle){
+        tablePanel.remove(1);
+        table = makeTable(req.getTableModel(tableTitle.getText().replace(" ", "_").toUpperCase()));
+        tablePanel.add(new JScrollPane(table));
+        frame.revalidate();
+        frame.repaint();
+    }
     private static void filterTable(JTable table, String searchCriteria) {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 
@@ -345,12 +353,9 @@ public class MainWindow {
         RowFilter<Object, Object> rowFilter = new RowFilter<>() {
             @Override
             public boolean include(RowFilter.Entry<?, ?> entry) {
-                // Iterate through all columns of the entry
                 for (int i = entry.getValueCount() - 1; i >= 0; i--) {
                     Object value = entry.getValue(i);
-                    // Convert value to lowercase for case-insensitive search
                     String strValue = (value == null) ? "" : value.toString().toLowerCase();
-                    // Check if the value contains the search criteria
                     if (strValue.contains(searchCriteria)) {
                         return true;
                     }
@@ -374,23 +379,25 @@ public class MainWindow {
             bottomInfo.setText("DB: OK - Data deleted successfully");
         }
     }
-    private void showAddRowDialog(JFrame parentFrame, JTable table) {
+    private void showAddRowDialog(JFrame parentFrame, JTable table, String tableTitle) {
         JDialog dialog = new JDialog(parentFrame, "Add New Row", true);
             dialog.setLayout(new GridLayout(table.getColumnCount()+1, 2));
             Vector<JTextField> dialogTextFields = new Vector<>();
-            for(int i = 0; i < table.getColumnCount(); i++){
+            for(int i = 1; i < table.getColumnCount(); i++){
                 dialog.add(new JLabel(table.getColumnName(i)));
                 dialogTextFields.add(new JTextField());
-                dialog.add(dialogTextFields.get(i));
+                dialog.add(dialogTextFields.get(i-1));
             }
 
             JButton addButton = new JButton("Add",new ImageIcon(new Icons().addIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
                 addButton.addActionListener(e -> {
-                    DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
                     Vector<String> dialogTexts = new Vector<>();
                     for(JTextField textField : dialogTextFields) dialogTexts.add(textField.getText());
-                    tableModel.addRow(dialogTexts);
-                    bottomInfo.setText("DB: OK - Data added Successfully");
+                    if(req.insert(dialogTexts, tableTitle.replace(" ", "_").toLowerCase())){
+                        bottomInfo.setText("DB: OK - Data added Successfully");
+                    } else {
+                        bottomInfo.setText("DB: ERROR - Nothing Changed");
+                    }
                     dialog.dispose();
                 });
 
