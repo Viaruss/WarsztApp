@@ -172,7 +172,8 @@ public class MainWindow {
                 tableDelete.addActionListener(e -> {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
-                        showDeleteConfirmationDialog(frame, table, selectedRow);
+                       showDeleteConfirmationDialog(frame, table, selectedRow, tableTitle.getText().replace(" ", "_").toLowerCase());
+                        refreshTable(tablePanel, tableTitle);
                     } else {
                         JOptionPane.showMessageDialog(frame, "Please select a row to delete.");
                     }
@@ -366,17 +367,19 @@ public class MainWindow {
 
         sorter.setRowFilter(rowFilter);
     }
-    private void showDeleteConfirmationDialog(JFrame parentFrame, JTable table, int selectedRow) {
+    private void showDeleteConfirmationDialog(JFrame parentFrame, JTable table, int selectedRow, String tableName) {
         int result = JOptionPane.showConfirmDialog(
                 parentFrame,
                 "Are you sure you want to delete the selected row?",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
-
         if (result == JOptionPane.YES_OPTION) {
             DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-            tableModel.removeRow(selectedRow);
-            bottomInfo.setText("DB: OK - Data deleted successfully");
+            if(req.delete(Integer.parseInt(tableModel.getValueAt(selectedRow, 0).toString()), tableName)){
+                bottomInfo.setText("DB: OK - Data deleted successfully");
+            } else {
+                bottomInfo.setText("DB: ERROR - Nothing Changed");
+            }
         }
     }
     private void showAddRowDialog(JFrame parentFrame, JTable table, String tableTitle) {

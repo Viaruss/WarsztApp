@@ -58,7 +58,6 @@ public class SQLRequests {
     public boolean updateDB(String query) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(query);
-            System.out.println("Database updated");
             return true;
         } catch (SQLException e) {
             System.out.println("SQLException: " + e.getMessage());
@@ -86,7 +85,6 @@ public class SQLRequests {
         }
         query = new StringBuilder(query.substring(0, query.length() - 2));
         query.append(")");
-        System.out.println(query);
         boolean outcome = false;
         try {
             outcome = updateDB(query.toString());
@@ -139,7 +137,6 @@ public class SQLRequests {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //change data or cancel operation
         if (confirmation.equalsIgnoreCase("Y")) {
             try {
                 updateDB(query.toString());
@@ -151,41 +148,15 @@ public class SQLRequests {
             System.out.println("Update canceled, data unchanged...");
         }
     }
-    public void delete(int tableIndex) {
-        int choice;
-        String tableName = tableNames.get(tableIndex);
-        do {
-            System.out.println("Enter data ID:");
-            choice = -1;
+    public boolean delete(int primaryId, String tableName) {
+        boolean result;
             try {
-                choice = inOut.inInt();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("Enter valid id number...");
-            }
-        } while(choice == -1);
-
-        System.out.println("Are You sure you want to delete:");
-        String confirmation = "";
-        try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM "+ tableName + " WHERE " +  getColumnNames(tableName).get(0) + " = " + choice);
-            rs.next();
-            for(int i = 1; i <= rs.getMetaData().getColumnCount(); i++) System.out.print(rs.getString(i) + " ");
-            System.out.println();
-            do {
-                System.out.println("Y/N?");
-                confirmation = inOut.inString();
-            } while(!confirmation.equalsIgnoreCase("Y") && !confirmation.equalsIgnoreCase("N"));
-        } catch (SQLException e) {e.printStackTrace();}
-        if (confirmation.equalsIgnoreCase("Y")) {
-            try {
-                updateDB("DELETE FROM "+ tableName + " WHERE " +  getColumnNames(tableName).get(0) + " = " + choice);
-                System.out.println("Data Deleted Successfully");
+                result = updateDB("DELETE FROM "+ tableName + " WHERE " +  getColumnNames(tableName).get(0) + " = " + primaryId);
             } catch (SQLException e) {
                 System.out.println("SQLException: " + e.getMessage());
+                result = false;
             }
-        } else {
-            System.out.println("Deletion canceled, data unchanged...");
-        }
+            return result;
     }
     public ArrayList<Account> accountInfo(){
         ArrayList<Account> accounts = new ArrayList<>();

@@ -7,13 +7,7 @@
     <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="Deleted unnecessary classes, added functionality to table - adding elements now works with DB">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/Menu.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/SQLRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/backend/SQLRequests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Car.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Client.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Employee.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Job.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Specialization.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1704629889490</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Deleted unnecessary classes, added functionality to table - adding elements now works with DB">
+      <created>1704832614005</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1704832614005</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="UnknownFeatures">
