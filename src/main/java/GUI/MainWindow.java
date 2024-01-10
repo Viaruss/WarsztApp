@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Vector;
 
 public class MainWindow {
@@ -65,20 +67,20 @@ public class MainWindow {
             ButtonConstructor.topButton(bookingsButton);
             topMenuPanel.add(bookingsButton, "tb3");
 
-        JButton partInfoButton = new JButton("Part Info", icons.gearIcon);
-            partInfoButton.addActionListener(e -> {changePage("p4"); partInfoButton.setBackground(colorPalette.dark3.brighter());});
-            ButtonConstructor.topButton(partInfoButton);
-            topMenuPanel.add(partInfoButton, "tb4");
+        JButton raportButton = new JButton("Report Generator", icons.fileIcon);
+            raportButton.addActionListener(e -> {changePage("p4"); raportButton.setBackground(colorPalette.dark3.brighter());});
+            ButtonConstructor.topButton(raportButton);
+            topMenuPanel.add(raportButton, "tb4");
 
         JButton jobArchiveButton = new JButton("Data Archives", icons.archiveIcon);
             jobArchiveButton.addActionListener(e -> {changePage("p5"); jobArchiveButton.setBackground(colorPalette.dark3.brighter());});
             ButtonConstructor.topButton(jobArchiveButton);
             topMenuPanel.add(jobArchiveButton, "tb5");
 
-        topButtons = new JButton[] {homeButton, contactButton, bookingsButton, partInfoButton, jobArchiveButton};
+        topButtons = new JButton[] {homeButton, contactButton, bookingsButton, raportButton, jobArchiveButton};
 
         JPanel topContent = new JPanel(new BorderLayout());
-            topContent.add(menuBar, BorderLayout.NORTH);
+            //topContent.add(menuBar, BorderLayout.NORTH);
             topContent.add(topMenuPanel, BorderLayout.SOUTH);
             topContent.setBackground(colorPalette.dark2);
 
@@ -102,9 +104,11 @@ public class MainWindow {
         JPanel page1 = new JPanel(new GridLayout(1, 3));
             JPanel leftSide1 = new JPanel(new GridLayout(2,1));
                 JPanel leftSide1Top = new JPanel(new FlowLayout());
+                    leftSide1Top.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
                     JLabel left1 = new JLabel("LEFT SIDE TEST 1");
                     leftSide1Top.add(left1);
                 JPanel leftSide2Top = new JPanel(new FlowLayout());
+                    leftSide2Top.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                     JLabel left2 = new JLabel("LEFT SIDE TEST 2");
                     leftSide2Top.add(left2);
                 leftSide1.add(leftSide1Top);
@@ -112,11 +116,13 @@ public class MainWindow {
             page1.add(leftSide1);
 
             JPanel centerSide1 = new JPanel();
+                centerSide1.setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
                 JLabel center1 = new JLabel("CENTER TEST");
                 centerSide1.add(center1);
             page1.add(centerSide1);
 
             JPanel rightSide1 = new JPanel();
+                rightSide1.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 2));
                 JLabel right1 = new JLabel("RIGHT SIDE TEST");
                 rightSide1.add(right1);
             page1.add(rightSide1);
@@ -149,7 +155,6 @@ public class MainWindow {
                 JLabel tableTitle = new JLabel("DANE MECHANIKOW");
                     tableTitle.setHorizontalAlignment(SwingConstants.CENTER);
                     tablePanel.add(tableTitle, BorderLayout.NORTH);
-                tablePanel.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
                 DefaultTableModel tableModel = req.getTableModel("Dane_mechanikow");
                 table = makeTable(tableModel);
                 JScrollPane tableScroll = new JScrollPane(table);
@@ -158,7 +163,6 @@ public class MainWindow {
             JPanel buttonsPanel = new JPanel();
                 buttonsPanel.setPreferredSize(new Dimension(200,200));
                 buttonsPanel.setLayout(new GridLayout(9, 0, 0, 5));
-                buttonsPanel.setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
 
                 JButton tableAdd = new JButton("Add element", icons.addIcon);
                 tableAdd.addActionListener(e -> {
@@ -257,6 +261,35 @@ public class MainWindow {
         frame.getContentPane().add(pageContent, BorderLayout.CENTER);
         frame.getContentPane().add(bottomContent, BorderLayout.SOUTH);
 
+        //Adding key shortcuts
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                System.out.println(e.getKeyCode());
+                switch (e.getKeyCode()){
+                    case 49:
+                        changePage("p1");
+                        homeButton.setBackground(colorPalette.dark3.brighter());
+                        break;
+                    case 50:
+                        changePage("p2");
+                        contactButton.setBackground(colorPalette.dark3.brighter());
+                        break;
+                    case 51:
+                        changePage("p3");
+                        bookingsButton.setBackground(colorPalette.dark3.brighter());
+                        break;
+                    case 52:
+                        changePage("p4");
+                        raportButton.setBackground(colorPalette.dark3.brighter());
+                        break;
+                    case 53:
+                        changePage("p5");
+                        jobArchiveButton.setBackground(colorPalette.dark3.brighter());
+                        break;
+                }
+            }
+        });
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

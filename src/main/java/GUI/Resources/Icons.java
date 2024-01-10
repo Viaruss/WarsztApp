@@ -16,4 +16,6 @@ public class Icons {
     public ImageIcon refreshIcon = new ImageIcon(new ImageIcon("src/main/java/GUI/Resources/IconRefresh.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
     public ImageIcon changeTableIcon = new ImageIcon(new ImageIcon("src/main/java/GUI/Resources/IconChangeTable.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
     public ImageIcon cancelIcon = new ImageIcon(new ImageIcon("src/main/java/GUI/Resources/IconCancel.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+    public ImageIcon fileIcon = new ImageIcon(new ImageIcon("src/main/java/GUI/Resources/IconFIle.png").getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH));
+
 }

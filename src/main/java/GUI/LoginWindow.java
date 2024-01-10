@@ -38,8 +38,6 @@ public class LoginWindow extends JFrame{
         loginButton.addActionListener(e -> checkLogInData(loginField, passwordField));
         loginButton.registerKeyboardAction(e -> checkLogInData(loginField, passwordField), KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        //jestes ameba jebana jutro masz dodac enter do logowania ok dz pozdrawiam
-
 
         JButton exitButton = new JButton("Exit");
         exitButton.setBounds(frameX - 300, 380, 200, 40);
