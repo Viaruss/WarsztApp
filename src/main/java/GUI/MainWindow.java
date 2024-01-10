@@ -183,9 +183,8 @@ public class MainWindow {
                 JButton tableModify = new JButton("Modify element", icons.editIcon);
                 tableModify.addActionListener(e -> {
                     int selectedRow = table.getSelectedRow();
-
                     if (selectedRow != -1) {
-                        showUpdateDialog(frame, table, selectedRow);
+                        showUpdateDialog(frame, table, selectedRow, tableTitle.getText());
                     } else {
                         JOptionPane.showMessageDialog(frame, "Please select a row to update.");
                     }
@@ -280,7 +279,7 @@ public class MainWindow {
             table.setFillsViewportHeight(true);
         return table;
     }
-    private void showUpdateDialog(JFrame parentFrame, JTable table, int selectedRow) {
+    private void showUpdateDialog(JFrame parentFrame, JTable table, int selectedRow, String tableTitle) {
         DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
         Vector rowData = tableModel.getDataVector().elementAt(selectedRow);
 
@@ -292,13 +291,16 @@ public class MainWindow {
                 dialogTextFields.add(new JTextField(rowData.get(i).toString()));
                 dialog.add(dialogTextFields.get(i));
             }
+            dialogTextFields.get(0).setEditable(false);
         JButton updateButton = new JButton("Update", new ImageIcon(new Icons().editIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));
             updateButton.addActionListener(e -> {
-                for(int i = 0; i < table.getColumnCount(); i++){
-                    rowData.set(i, dialogTextFields.get(i).getText());
+                Vector<String> dialogTexts = new Vector<>();
+                for(JTextField textField : dialogTextFields) dialogTexts.add(textField.getText());
+                if(req.update(dialogTexts, tableTitle.replace(" ", "_").toLowerCase())){
+                    bottomInfo.setText("DB: OK - Data modified Successfully");
+                } else {
+                    bottomInfo.setText("DB: ERROR - Nothing Changed");
                 }
-                tableModel.fireTableRowsUpdated(selectedRow, selectedRow);
-                bottomInfo.setText("DB: OK - Updated data at row " + table.getSelectedRow()+1);
                 dialog.dispose();
             });
         JButton cancelButton = new JButton("Cancel",new ImageIcon(new Icons().cancelIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH)));

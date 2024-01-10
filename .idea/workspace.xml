@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="Deleted unnecessary classes, added functionality to table - adding elements now works with DB">
+    <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="added functionality to table - deleting elements now works with DB">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/SQLRequests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/backend/SQLRequests.java" afterDir="false" />
@@ -56,17 +56,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "full.screen.before.presentation.mode": "false",
-    "last_opened_file_path": "D:/programowanie/Java/WarsztApp/WarsztApp/src/main/java/GUI/Resources",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/programowanie/Java/WarsztApp/WarsztApp/src/main/java/GUI/Resources&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\programowanie\Java\WarsztApp\WarsztApp\src\main\java\GUI\Resources" />
@@ -106,7 +106,7 @@
       </method>
     </configuration>
     <configuration name="Testing" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.backend.Testing" />
+      <option name="MAIN_CLASS_NAME" value="Testing.Testing" />
       <module name="WarsztApp" />
       <extension name="coverage">
         <pattern>
@@ -212,7 +212,14 @@
       <option name="project" value="LOCAL" />
       <updated>1704832614005</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="added functionality to table - deleting elements now works with DB">
+      <created>1704838761444</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1704838761444</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -242,6 +249,7 @@
     <MESSAGE value="Added functionality to delete data from the table" />
     <MESSAGE value="Added functionality to add data to the table" />
     <MESSAGE value="Deleted unnecessary classes, added functionality to table - adding elements now works with DB" />
-    <option name="LAST_COMMIT_MESSAGE" value="Deleted unnecessary classes, added functionality to table - adding elements now works with DB" />
+    <MESSAGE value="added functionality to table - deleting elements now works with DB" />
+    <option name="LAST_COMMIT_MESSAGE" value="added functionality to table - deleting elements now works with DB" />
   </component>
 </project>

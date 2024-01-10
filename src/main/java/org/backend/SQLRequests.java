@@ -20,7 +20,6 @@ public class SQLRequests {
     private final ArrayList <String> tableNames = new ArrayList<>();
     private Connection conn = null;
     private Statement stmt;
-    InOutManager inOut = new InOutManager();
     public SQLRequests(){
         try {
             conn = DriverManager.getConnection(PropertiesReader.read());
@@ -93,60 +92,27 @@ public class SQLRequests {
         }
         return outcome;
     }
-    public void update(int tableIndex) {
-        int choice;
-        String tableName = tableNames.get(tableIndex);
-        //chose data
-        do {
-            System.out.println("Enter data ID:");
-            choice = -1;
-            try {
-                choice = inOut.inInt();
-            } catch (java.util.InputMismatchException e) {
-                System.out.println("Enter valid id number...");
-            }
-        } while (choice == -1);
-        //enter data
-        System.out.println("Enter modified data one by one, type '-' to skip to next column");
-        ArrayList<String> data = new ArrayList<>();
+    public boolean update(Vector<String> data, String tableName) {
         ArrayList<String> columns = getColumnNames(tableName);
-        System.out.println("Input data to insert, one by one:");
         StringBuilder query = new StringBuilder("UPDATE " + tableName + " set ");
         for (int i = 1; i < columns.size(); i++) {
-            System.out.println(columns.get(i));
-            String temp = inOut.inString();
-            if (temp.equalsIgnoreCase("-")) continue;
-            query.append(columns.get(i)).append(" = '").append(temp).append("', ");
-            data.add(temp);
-        }
-        query = new StringBuilder(query.substring(0, query.length() - 2) + " WHERE " + columns.get(0) + " = " + choice);
-        //confirmation
-        System.out.println("Are You sure you want to change:");
-        String confirmation = "";
-        try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM " + tableName + " WHERE " + getColumnNames(tableName).get(0) + " = " + choice);
-            rs.next();
-            for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) System.out.print(rs.getString(i) + " ");
-            System.out.println("\nto:");
-            for (String d : data) System.out.print(d +" ");
-            System.out.println();
-            do {
-                System.out.println("Y/N?");
-                confirmation = inOut.inString();
-            } while (!confirmation.equalsIgnoreCase("Y") && !confirmation.equalsIgnoreCase("N"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (confirmation.equalsIgnoreCase("Y")) {
+            query.append(columns.get(i)).append(" = ");
             try {
-                updateDB(query.toString());
-                System.out.println("Data Updated Successfully");
-            } catch (SQLException e) {
-                System.out.println("SQLException: " + e.getMessage());
+                Double.parseDouble(data.get(i));
+                query.append(data.get(i)).append(", ");
+            } catch (NumberFormatException nfe) {
+                query.append("'").append(data.get(i)).append("', ");
             }
-        } else {
-            System.out.println("Update canceled, data unchanged...");
         }
+        query = new StringBuilder(query.substring(0, query.length() - 2));
+        query.append(" WHERE ").append(columns.get(0)).append(" = ").append(data.get(0));
+        boolean outcome = false;
+        try {
+            outcome = updateDB(query.toString());
+        } catch (SQLException e){
+            System.out.println("SQLException: " + e.getMessage());
+        }
+        return outcome;
     }
     public boolean delete(int primaryId, String tableName) {
         boolean result;
