@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="added functionality to table - modifying elements now works with DB">
-      <change afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconFile.png" afterDir="false" />
+    <list default="true" id="a55e7ff9-b340-494a-9efe-88a85765127b" name="Changes" comment="added keybindings to quickly change pages, minor page 4 updates">
+      <change afterPath="$PROJECT_DIR$/src/main/java/FileArchive/IconCalendar.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/FileArchive/IconPhone.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/backend/HibernateRequests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/LoginWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/LoginWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/AccountManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/AccountManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/Resources/Icons.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/Icons.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/Resources/ButtonConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/ButtonConstructor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconCalendar.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconCalendar.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconPhone.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/GUI/Resources/IconPhone.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/backend/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/backend/dataTypes/Account.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,22 +66,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;full.screen.before.presentation.mode&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/programowanie/Java/WarsztApp/WarsztApp/src/main/java/GUI/Resources&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "full.screen.before.presentation.mode": "false",
+    "last_opened_file_path": "C:/Users/barto/Desktop",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\programowanie\Java\WarsztApp\WarsztApp\src\main\java\GUI\Resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\programowanie\Java\WarsztApp\WarsztApp\src\main\java\FileArchive" />
       <recent name="D:\programowanie\Java\WarsztApp\WarsztApp\src\main\java\GUI\Resources" />
       <recent name="D:\programowanie\Java\WarsztApp\WarsztApp\src\main\java\Resources" />
       <recent name="D:\programowanie\Java\WarsztApp\WarsztApp\src\main\java\org\example" />
@@ -228,7 +240,14 @@
       <option name="project" value="LOCAL" />
       <updated>1704920478256</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="added keybindings to quickly change pages, minor page 4 updates">
+      <created>1704924245888</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1704924245888</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -260,6 +279,7 @@
     <MESSAGE value="Deleted unnecessary classes, added functionality to table - adding elements now works with DB" />
     <MESSAGE value="added functionality to table - deleting elements now works with DB" />
     <MESSAGE value="added functionality to table - modifying elements now works with DB" />
-    <option name="LAST_COMMIT_MESSAGE" value="added functionality to table - modifying elements now works with DB" />
+    <MESSAGE value="added keybindings to quickly change pages, minor page 4 updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="added keybindings to quickly change pages, minor page 4 updates" />
   </component>
 </project>

@@ -27,7 +27,7 @@ public class MainWindow {
     SQLRequests req;
     MainWindow(AccountManager acc){
         accountManager = acc;
-        req = acc.getReq();
+        req = new SQLRequests();
         Colors colorPalette = new Colors();
         frame = new JFrame("WarsztApp");
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -161,7 +161,7 @@ public class MainWindow {
                 tablePanel.add(tableScroll, BorderLayout.CENTER);
 
             JPanel buttonsPanel = new JPanel();
-                buttonsPanel.setPreferredSize(new Dimension(200,200));
+                buttonsPanel.setPreferredSize(new Dimension(150,200));
                 buttonsPanel.setLayout(new GridLayout(9, 0, 0, 5));
 
                 JButton tableAdd = new JButton("Add element", icons.addIcon);
@@ -189,6 +189,7 @@ public class MainWindow {
                     int selectedRow = table.getSelectedRow();
                     if (selectedRow != -1) {
                         showUpdateDialog(frame, table, selectedRow, tableTitle.getText());
+                        refreshTable(tablePanel, tableTitle);
                     } else {
                         JOptionPane.showMessageDialog(frame, "Please select a row to update.");
                     }

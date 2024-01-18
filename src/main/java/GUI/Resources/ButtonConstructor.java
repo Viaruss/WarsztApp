@@ -38,6 +38,7 @@ public class ButtonConstructor {
         button.setBackground(colorPalette.lightGrey);
         button.setForeground(Color.black);
         button.setFocusable(false);
+        button.setFont(new Font("Arial", Font.PLAIN, 15));
         button.setToolTipText(button.getText());
         button.setIconTextGap(0);
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
